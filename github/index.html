@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MCU Timeline</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Oswald:wght@300;400;500&display=swap">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg1:#dfe6f5;--bg2:#f6dfe3;--tx:#14151c;--mut:#4d5163;--gl:rgba(255,255,255,.5);--gb:rgba(255,255,255,.75);--sh:rgba(40,40,80,.18);--chip:rgba(255,255,255,.55)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#0a0b14;--bg2:#1a0b12;--tx:#f5f5fa;--mut:#aab0c4;--gl:rgba(255,255,255,.07);--gb:rgba(255,255,255,.18);--sh:rgba(0,0,0,.5);--chip:rgba(255,255,255,.08)}}
+:root[data-theme="dark"]{--bg1:#0a0b14;--bg2:#1a0b12;--tx:#f5f5fa;--mut:#aab0c4;--gl:rgba(255,255,255,.07);--gb:rgba(255,255,255,.18);--sh:rgba(0,0,0,.5);--chip:rgba(255,255,255,.08)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:var(--tx);font:400 16px/1.4 Oswald,'Arial Narrow',sans-serif;overflow-x:hidden}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.55;z-index:0;pointer-events:none}
+.o1{width:480px;height:480px;background:#ec1d24;top:-120px;left:-100px}.o2{width:420px;height:420px;background:#2196f3;top:35%;right:-120px}.o3{width:460px;height:460px;background:#3fae4a;bottom:-160px;left:25%}
+main{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:22px 18px 60px}
+.glass{background:var(--gl);border:1px solid var(--gb);backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);box-shadow:0 10px 36px var(--sh),inset 0 1px 0 var(--gb);border-radius:22px}
+.disp{font-family:Anton,Impact,'Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.01em}
+.bb{font-family:'Bebas Neue',Anton,Impact,'Arial Narrow',sans-serif}
+.hero{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;padding:26px 28px}
+h1{margin:0;font-size:clamp(40px,8vw,84px);line-height:.95;font-weight:400}
+h1 span{color:#ec1d24}
+.hero p{margin:8px 0 0;color:var(--mut);max-width:46ch}
+.cd{text-align:center;padding:14px 22px;border-radius:20px;background:linear-gradient(145deg,rgba(236,29,36,.85),rgba(160,10,20,.85));color:#fff;border:1px solid rgba(255,255,255,.35)}
+.cd b{display:block;font:400 64px/1 Anton,Impact,sans-serif}.cd small{font:400 18px 'Bebas Neue',Anton,sans-serif;letter-spacing:.06em}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0;padding:12px 14px}
+.tabs{display:flex;gap:6px}
+button{font:inherit;color:inherit;cursor:pointer}
+.tab,.chip{border:1px solid var(--gb);background:var(--chip);border-radius:999px;padding:6px 16px;font:400 20px 'Bebas Neue',Anton,sans-serif;letter-spacing:.04em;transition:.2s}
+.tab[aria-pressed=true]{background:#ec1d24;color:#fff;border-color:transparent;box-shadow:0 4px 18px rgba(236,29,36,.5)}
+.chip{font-size:17px;padding:4px 13px;display:flex;gap:7px;align-items:center}.chip i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.chip[aria-pressed=true]{background:var(--c);color:#fff;border-color:transparent}.chip[aria-pressed=true] i{background:#fff}
+input[type=search]{flex:1;min-width:160px;border:1px solid var(--gb);background:var(--chip);color:var(--tx);border-radius:999px;padding:8px 16px;font:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid #ffd400;outline-offset:2px}
+.prog{display:flex;align-items:center;gap:14px;padding:12px 18px;margin-bottom:16px}
+.meter{flex:1;height:12px;border-radius:9px;background:var(--chip);overflow:hidden;border:1px solid var(--gb)}
+.meter div{height:100%;width:0;background:linear-gradient(90deg,#ec1d24,#ffd400);transition:width .5s}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{position:relative;padding:16px 16px 14px 22px;display:flex;flex-direction:column;gap:4px;overflow:hidden;transition:transform .2s,opacity .2s}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:7px;background:var(--c)}
+.card:hover{transform:translateY(-3px)}
+.card.seen{opacity:.5}.card.seen h3{text-decoration:line-through}
+.meta{display:flex;gap:8px;align-items:center;color:var(--mut);font-size:14px}
+.badge{font:400 15px 'Bebas Neue',Anton,sans-serif;padding:1px 10px;border-radius:99px;letter-spacing:.05em}
+.b2{background:#ec1d24;color:#fff}.b1{background:#ffd400;color:#14151c}
+h3{margin:0;font:400 25px/1.05 'Bebas Neue',Anton,sans-serif;letter-spacing:.02em;padding-right:34px}
+.note{font-size:14.5px;color:var(--mut)}
+.ck{position:absolute;right:12px;top:12px;width:30px;height:30px;border-radius:50%;border:2px solid var(--gb);background:var(--chip);display:grid;place-items:center;font-size:16px;line-height:1}
+.seen .ck{background:#3fae4a;border-color:#3fae4a;color:#fff}
+.ph{margin:26px 4px 12px;display:flex;align-items:baseline;gap:14px}
+.ph h2{margin:0;font-size:34px;font-weight:400;color:var(--c)}.ph span{color:var(--mut)}
+.route{position:relative;display:grid;gap:14px;padding-left:46px}
+.route::before{content:"";position:absolute;left:19px;top:20px;bottom:20px;width:5px;border-radius:5px;background:linear-gradient(#ec1d24,#ffd400,#3fae4a)}
+.step{position:relative}
+.step .n{position:absolute;left:-46px;top:14px;width:42px;height:42px;display:grid;place-items:center;color:#14151c;background:#ffd400;font:400 24px Anton,Impact,sans-serif;clip-path:polygon(50% 0,62% 14%,80% 8%,82% 28%,100% 34%,88% 50%,100% 66%,82% 72%,80% 92%,62% 86%,50% 100%,38% 86%,20% 92%,18% 72%,0 66%,12% 50%,0 34%,18% 28%,20% 8%,38% 14%)}
+.step .card{padding-left:24px}.why{font-size:17px;max-width:70ch}
+.final{padding:22px 26px;text-align:center;background:linear-gradient(135deg,rgba(63,174,74,.75),rgba(20,90,35,.75));color:#fff}
+.final b{display:block;font:400 clamp(34px,7vw,68px)/1 Anton,Impact,sans-serif;text-transform:uppercase}
+.mut{margin:22px 0 0;padding:18px 22px}.mut h2{margin:0 0 10px;font-size:28px;font-weight:400;color:#ffd400}.mut ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}.mut li{display:flex;flex-direction:column;padding:8px 12px;border-radius:14px;background:var(--chip);border:1px solid var(--gb)}.mut b{font-size:22px;font-weight:400}.mut span{color:var(--mut);font-size:14px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 16px;margin-bottom:12px}.legend p{margin:0;color:var(--mut);font-size:14px;flex:1;min-width:220px}
+.mapwrap{overflow-x:auto;padding:14px;margin-bottom:14px}.map{display:grid;grid-template-columns:96px repeat(18,minmax(150px,1fr));gap:10px;min-width:max-content;align-items:start}
+.mh{font-size:24px;font-weight:400;padding:2px 8px;border-left:2px solid var(--gb)}
+.lane{position:sticky;left:0;z-index:2;padding:10px 12px;border-radius:14px;font-size:26px;background:var(--bg1);border:1px solid var(--gb)}
+.cell{display:flex;flex-direction:column;gap:6px;padding:4px 6px;border-left:2px dashed var(--gb);min-height:46px}
+.pill{border:0;text-align:left;padding:6px 11px;border-radius:12px;background:var(--c);color:#fff;font:400 14px/1.15 Oswald,sans-serif;box-shadow:0 3px 10px var(--sh);transition:.2s}
+.pill:hover{transform:scale(1.04)}.pill.ess{box-shadow:0 0 0 2px var(--bg1),0 0 0 5px #ec1d24}
+.pill.seen{opacity:.45;text-decoration:line-through}.pill.dim:not(.seen){opacity:.22}
+.pills{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:10px}.mut p.note{margin:0}
+.next{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:16px 22px;margin-bottom:16px}.next h2{margin:2px 0;font-size:34px;font-weight:400}.next p{margin:0;color:var(--mut);max-width:60ch}
+.btn{border:0;border-radius:999px;padding:10px 24px;background:#ec1d24;color:#fff;font:400 22px 'Bebas Neue',Anton,sans-serif;box-shadow:0 6px 20px rgba(236,29,36,.45)}
+.svgw{overflow-x:auto;padding:14px;margin-bottom:14px}.svgw svg{display:block;min-width:860px;width:100%;height:auto}.svgw text{font-family:Oswald,sans-serif}.svgw .t{font-family:'Bebas Neue',Anton,sans-serif}
+.ygg{max-width:800px;margin:0 auto}.ygg svg{display:block;width:100%;height:auto}.ygg text{font-family:Oswald,sans-serif}.ygg .t{font-family:'Bebas Neue',Anton,sans-serif}
+.cap{position:sticky;top:8px;z-index:5;padding:10px 18px;margin:0 auto 12px;max-width:800px;min-height:48px;font-size:15px;color:var(--mut)}
+.hv{opacity:0;fill:var(--tx);font-size:21px;paint-order:stroke;stroke:var(--bg1);stroke-width:6px;stroke-linejoin:round;pointer-events:none;transition:opacity .15s}.nd:hover .hv{opacity:1}.nd:hover path{stroke-opacity:1}
+.nd{cursor:pointer}.nd .lf{filter:drop-shadow(0 0 5px var(--c));transition:.2s}.nd:hover .lf{filter:drop-shadow(0 0 12px var(--c))}.nd.seen{opacity:.3}
+.empty{padding:30px;text-align:center;color:var(--mut)}
+.foot{margin-top:34px;text-align:center;color:var(--mut);font-size:13px}
+.tg{margin-left:auto}
+@media(max-width:640px){.hero{grid-template-columns:1fr}.cd{justify-self:start}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style><script>if(matchMedia("(max-width:700px)").matches&&location.hash!=="#escritorio")location.replace("movil.html")</script>
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+<main>
+<header class="glass hero">
+  <div><h1 class="disp">MCU <span>Timeline</span></h1>
+  <p>Películas, series y one-shots en orden cronológico y narrativo, con la ruta mínima para llegar a Doomsday.</p></div>
+  <div class="cd"><b id="days">--</b><small>días para Doomsday</small></div>
+</header>
+<div class="glass bar">
+  <div class="tabs" role="group" aria-label="Vista">
+    <button class="tab" data-v="ruta" aria-pressed="true">Ruta a Doomsday</button>
+    <button class="tab" data-v="map" aria-pressed="false">Mapa por años</button>
+    <button class="tab" data-v="graph" aria-pressed="false">Conexiones</button>
+    <button class="tab" data-v="tree" aria-pressed="false">Multiverso</button>
+    <button class="tab" data-v="ygg" aria-pressed="false">Yggdrasil</button>
+    <button class="tab" data-v="tl" aria-pressed="false">Lista completa</button>
+  </div>
+  <input type="search" id="q" placeholder="Buscar título" aria-label="Buscar título">
+  <button class="chip tg" id="hide" aria-pressed="false" style="--c:#3fae4a">Ocultar vistos</button>
+</div>
+<div class="glass bar" id="phases" style="display:none"></div>
+<div id="next"></div>
+<div class="glass prog"><span class="bb" style="font-size:22px" id="ptxt"></span><div class="meter"><div id="pbar"></div></div></div>
+<div id="out"></div>
+<p class="foot">Fechas y orden basados en las notas del autor. Tu progreso se guarda solo en este navegador.</p>
+</main>
+<script>
+const PH={1:['The Avengers','#e62429'],2:['The Defenders','#f47b20'],3:['Disassembled','#a35be0'],4:['Aftermath','#2196f3'],5:['Variance','#12b99a'],6:['Doom','#3fae4a'],7:['X-Men de Fox','#ffd400']};
+const TY={P:'Película',S:'Serie',O:'One-shot'};
+const D=`1|1260 a.C.–1896|Eyes of Wakanda|S|0|
+1|1940s–2011|Capitán América: El primer vengador|P|0|WWII
+1|1946|Agent Carter T1 + one-shot|S|0|
+1|1947|Agent Carter T2|S|0|
+1|1995|Capitana Marvel|P|0|
+1|2008|Iron Man|P|0|
+1|2011|Iron Man 2|P|0|Fury's Big Week
+1|2011|Thor|P|0|Con el one-shot A Funny Thing Happened…
+1|2011|El increíble Hulk|P|0|Retconeada
+1|2011|The Consultant|O|0|
+1|2012|Los Vengadores|P|0|
+1|2012|Item 47|O|0|
+2|2012|Iron Man 3|P|0|Navidad 2012
+2|2013|All Hail the King|O|0|
+2|2013|Agents of S.H.I.E.L.D. T1|S|0|Ep. 1-7 antes de Dark World, 8-16 después, 17-22 tras Winter Soldier
+2|2013|Thor: El mundo oscuro|P|0|
+2|2014|Cap. América: El soldado de invierno|P|0|
+2|2014|Guardianes de la Galaxia|P|0|
+2|2014|Guardianes de la Galaxia Vol. 2|P|0|Casi seguidas
+2|2014|Daredevil|S|0|
+2|2015|Jessica Jones|S|0|
+2|2015|Agents of S.H.I.E.L.D. T2|S|0|Ep. 1-19 antes de Ultron, 20-22 después
+2|2015|Vengadores: La era de Ultrón|P|0|
+2|2015|Ant-Man|P|0|
+2|2015|Agents of S.H.I.E.L.D. T3|S|0|Ep. 1-10 tras Ant-Man, 11-19 con Daredevil T2
+2|2015|Daredevil T2 + Luke Cage T1|S|0|Intercalados episodio a episodio
+2|2016|Iron Fist|S|0|
+2|2016|The Defenders|S|0|
+3|2016|Capitán América: Civil War|P|0|Viuda Negra y Black Panther solapan su final
+3|2016|Viuda Negra|P|1|Presenta a Yelena y Red Guardian, ambos en Doomsday
+3|2016|Black Panther|P|0|
+3|2016|Inhumans|S|0|
+3|2016|Spider-Man: Homecoming|P|0|
+3|2016|The Punisher|S|0|
+3|2016–17|Doctor Strange|P|0|
+3|2017|AOS Slingshot + T4|S|0|
+3|2017|Cloak & Dagger T1|S|0|Mardi Gras
+3|2017|Jessica Jones T2 + Luke Cage T2|S|0|
+3|2017|Thor: Ragnarok|P|0|
+3|2017|Iron Fist T2 + Cloak & Dagger T2|S|0|
+3|2017|Daredevil T3|S|0|Acción de Gracias y Navidad
+3|2017–18|Runaways T1-3|S|0|
+3|2018|Punisher T2 + Jessica Jones T3|S|0|
+3|2018|Agents of S.H.I.E.L.D. T5|S|0|
+3|2018|Ant-Man y la Avispa|P|0|
+3|2018|Vengadores: Infinity War|P|0|
+3|2019–20|Agents of S.H.I.E.L.D. T6 y T7|S|0|
+3|2023|Vengadores: Endgame|P|2|Loki escapa y el TVA interviene
+4|Fuera del tiempo|Loki T1|S|2|
+4|Fuera del tiempo|What If…? T1 + Marvel Zombies|S|0|
+4|2023|WandaVision|S|0|Halloween
+4|2023–24|Eternals|P|0|
+4|2024|Shang-Chi|P|1|Simu Liu vuelve en Doomsday
+4|2024|Falcon y el Soldado de Invierno|S|1|
+4|2024|Thor: Love & Thunder|P|1|Explica dónde dejamos a Thor
+4|2024|Moon Knight|S|0|
+4|2024|Peter's To-Do List|O|0|
+4|2024|Spider-Man: Far From Home|P|0|
+4|2024|Spider-Man: No Way Home|P|2|
+4|2024|Doctor Strange en el multiverso de la locura|P|1|
+4|2024|Hawkeye|S|0|Navidad
+4|2025|She-Hulk|S|0|
+4|2025|Black Panther: Wakanda Forever|P|1|
+4|2025|Echo|S|0|
+4|2025|Ms. Marvel|S|0|
+5|2025|Ironheart|S|0|
+5|2025|Secret Invasion|S|0|
+5|2025|The Marvels|P|1|Solo importa su escena poscréditos
+5|2025|Guardians: Holiday Special|O|0|
+5|2025|Werewolf by Night|O|0|
+5|2026|Wonder Man|S|0|
+5|2026|Ant-Man y la Avispa: Quantumania|P|1|
+5|Fuera del tiempo|Loki T2|S|2|
+5|Fuera del tiempo|What If…? T2-T3|S|0|
+5|Fuera del tiempo|Deadpool & Wolverine|P|2|
+5|2026|Guardianes de la Galaxia Vol. 3|P|0|
+5|2026|Agatha All Along|S|0|
+5|2025–27|Daredevil: Born Again T1|S|0|
+5|2027|Capitán América: Brave New World|P|1|
+5|2027|Thunderbolts*|P|2|
+5|2027|Daredevil: Born Again T2|S|0|
+5|2027–28|The Punisher: One Last Kill|S|0|
+5|2028|Spider-Man: Brand New Day|P|2|Estrenada el 31 jul 2026
+5|2028|Vision Quest|S|0|
+6|1960s|Los 4 Fantásticos: Primeros pasos|P|2|Tierra 828
+6|2028|Avengers: Doomsday|P|0|Estreno 18 dic 2026
+6|Final|Avengers: Secret Wars|P|0|Estreno dic 2027
+7|2000|X-Men (2000)|P|2|Presenta a Xavier, Magneto, Cyclops y Mystique, que vuelven en Doomsday
+7|2003|X2: X-Men United|P|2|Presenta a Nightcrawler (Alan Cumming), que también vuelve
+7|2006|X-Men: La decisión final|P|1|Debut de Beast (Kelsey Grammer)
+7|2011|X-Men: Primera generación|P|1|Xavier y Magneto jóvenes; muy recomendada
+7|2014|X-Men: Días del futuro pasado|P|1|Reescribe el final de la trilogía original y enlaza con el multiverso`.split('\n').map((l,i)=>{const a=l.split('|');return{id:i,p:+a[0],y:a[1],t:a[2],k:a[3],r:+a[4],n:a[5]||''}});
+const R=[
+[['X-Men (2000)','X2: X-Men United'],'X-Men + X2','Los mutantes de Fox que vuelven: Xavier, Magneto, Cyclops, Mystique y Nightcrawler. Aquí empieza todo.'],
+[['Vengadores: Endgame'],'Vengadores: Endgame','La base de todo: cierra la Saga del Infinito y deja claro que el tiempo y el multiverso se pueden romper.'],
+[['Loki T1','Loki T2'],'Loki T1 + T2','El TVA, la Línea Sagrada y las ramas infinitas: por qué pueden existir variantes de Doom.'],
+[['Spider-Man: No Way Home'],'Spider-Man: No Way Home','Los universos se cruzan y entran héroes y villanos de otras Tierras.'],
+[['Deadpool & Wolverine'],'Deadpool & Wolverine','Conecta el TVA con los mutantes de Fox y explica los cameos de X-Men.'],
+[['Thunderbolts*'],'Thunderbolts*','Nace el nuevo equipo. Su escena final anuncia una nave extradimensional sobre la Tierra-616.'],
+[['Los 4 Fantásticos: Primeros pasos'],'Los 4 Fantásticos: Primeros pasos','Debut de Doom en el MCU. Reed ya sabe viajar por el multiverso.'],
+[['Spider-Man: Brand New Day'],'Spider-Man: Brand New Day','La última antes de Doomsday. Su escena final sugiere que Peter se va fuera del planeta.']];
+const $=s=>document.querySelector(s);
+let seen=new Set(),view='ruta',ph=0,hide=false,q='';
+try{seen=new Set(JSON.parse(localStorage.getItem('mcu-seen')||'[]'))}catch(e){}
+const save=()=>{try{localStorage.setItem('mcu-seen',JSON.stringify([...seen]))}catch(e){}};
+const ids=t=>D.filter(d=>d.t===t).map(d=>d.id);
+function card(d,seenNow,extra,idList){
+ const c=PH[d.p][1];
+ return `<article class="glass card ${seenNow?'seen':''}" style="--c:${c}"><button class="ck" data-i="${idList.join(',')}" aria-label="Marcar como visto" aria-pressed="${seenNow}">${seenNow?'✓':''}</button>
+ <div class="meta"><span>${d.y}</span><span>${TY[d.k]}</span>${d.r==2?'<span class="badge b2">Esencial</span>':d.r==1?'<span class="badge b1">Extra</span>':''}</div>
+ <h3>${d.t}</h3>${d.n?`<div class="note">${d.n}</div>`:''}${extra||''}</article>`}
+function progress(){
+ const es=D.filter(d=>d.r==2),n=es.filter(d=>seen.has(d.id)).length,a=D.filter(d=>seen.has(d.id)).length;
+ $('#ptxt').textContent=view==='ruta'?`Esenciales ${n}/${es.length}`:`Vistos ${a}/${D.length}`;
+ $('#pbar').style.width=(view==='ruta'?n/es.length:a/D.length)*100+'%'}
+let hl=false;
+const COLS=['pre',1995,2008,2011,2012,2013,2014,2015,2016,2017,2018,2019,2023,2024,2025,2026,2027,2028];
+const colOf=d=>{if(d.p==7||/fuera/i.test(d.y)||d.y==='1960s')return'm';if(d.y==='Final')return 2028;const n=+(d.y.match(/\d{4}/)||[0])[0];return n<1995?'pre':n==2020?2019:n};
+const pill=d=>`<button class="pill${seen.has(d.id)?' seen':''}${d.r==2?' ess':''}${hl&&d.r<2?' dim':''}" style="--c:${PH[d.p][1]}${d.p==7?';color:#14151c':''}" data-i="${d.id}" title="${d.y} · ${TY[d.k]}${d.n?' · '+d.n:''}">${d.t}</button>`;
+function mapHTML(){
+ const lane=(l,ks)=>`<div class="lane bb">${l}</div>`+COLS.map(c=>`<div class="cell">${D.filter(d=>ks.includes(d.k)&&colOf(d)===c).map(pill).join('')}</div>`).join('');
+ const lg=Object.entries(PH).filter(([k])=>k<7).map(([k,v])=>`<span class="chip" style="--c:${v[1]}"><i></i>${v[0]}</span>`).join('');
+ return `<div class="glass legend">${lg}<button class="chip" id="hl" aria-pressed="${hl}" style="--c:#ec1d24">Resaltar ruta a Doomsday</button><p>Desliza hacia los lados: cada columna es un año, el cine va arriba y las series abajo. Borde rojo: esencial. Toca un título para marcarlo como visto; en ordenador, pasa el cursor para ver el detalle.</p></div>
+ <div class="glass mapwrap"><div class="map"><div></div>${COLS.map(c=>`<div class="mh disp">${c==='pre'?'Antes de 1995':c==2019?'2019–20':c}</div>`).join('')}${lane('Cine',['P','O'])}${lane('Series',['S'])}</div></div>
+ <div class="glass mut"><h2 class="disp">Fuera de la secuencia</h2><p class="note">Ocurren en otras Tierras o fuera del tiempo, así que no encajan en ningún año: Loki, What If…?, Deadpool & Wolverine, Los 4 Fantásticos (Tierra 828) y los X-Men de Fox.</p><div class="pills">${D.filter(d=>colOf(d)==='m').map(pill).join('')}</div></div>`}
+function nextHTML(){
+ const st=R.find(r=>!r[0].flatMap(ids).every(x=>seen.has(x)));let t,w,il;
+ if(st){t=st[1];w=st[2];il=st[0].flatMap(ids)}
+ else{const e=D.filter(d=>d.r==1&&!seen.has(d.id)).sort((a,b)=>(a.p==7?0:a.p)-(b.p==7?0:b.p))[0];if(e){t=e.t;w=e.n||'Extra recomendado para tener más contexto.';il=[e.id]}}
+ if(!t)return '<div class="glass next"><div><h2 class="disp">Listo para Doomsday</h2><p>Has visto la ruta y todos los extras. Nos vemos el 18 de diciembre.</p></div></div>';
+ return `<div class="glass next"><div><span class="bb" style="font-size:22px;color:var(--mut)">${st?'Ahora toca':'Extra pendiente'}</span><h2 class="disp">${t}</h2><p>${w}</p></div><button class="btn" data-i="${il.join(',')}">Marcar como visto</button></div>`}
+const G={endgame:[100,70,'Endgame',['Vengadores: Endgame'],3],loki:[380,70,'Loki T1 + T2',['Loki T1','Loki T2'],4],nwh:[100,210,'No Way Home',['Spider-Man: No Way Home'],4],mom:[380,210,'Dr. Strange: Multiverso',['Doctor Strange en el multiverso de la locura'],4],
+xmen:[100,350,'X-Men + X2',['X-Men (2000)','X2: X-Men United'],7],dofp:[380,350,'Días del futuro pasado',['X-Men: Días del futuro pasado'],7],dw:[660,350,'Deadpool & Wolverine',['Deadpool & Wolverine'],5],
+tb:[100,490,'Thunderbolts*',['Thunderbolts*'],5],f4:[380,490,'Los 4 Fantásticos',['Los 4 Fantásticos: Primeros pasos'],6],bnd:[660,490,'Brand New Day',['Spider-Man: Brand New Day'],5],marvels:[860,490,'The Marvels',['The Marvels'],5],doom:[1000,320,'DOOMSDAY',[],6]};
+const GE=[['endgame','loki','Loki escapa'],['nwh','mom','Multiverso'],['xmen','dofp','Línea reescrita'],['dofp','dw','Mutantes de Fox'],['loki','dw','El TVA'],['mom','doom','Incursiones'],['dw','doom','Mutantes al MCU'],['tb','f4','Nave en órbita'],['f4','doom','Debut de Doom'],['bnd','doom','Escena final'],['marvels','doom','Beast'],['loki','doom','Variantes de Doom','arc']];
+function clip(a,b){const dx=b[0]-a[0],dy=b[1]-a[1],t=Math.min(80/Math.abs(dx||1e-9),24/Math.abs(dy||1e-9));return[a[0]+dx*t,a[1]+dy*t]}
+function graphHTML(){
+ let e='',n='';
+ GE.forEach(([a,b,l,arc])=>{const A=G[a],B=G[b];let d,mx,my;
+  if(arc){d=`M${A[0]+80} ${A[1]} Q${B[0]} 0 ${B[0]} ${B[1]-26}`;mx=(A[0]+80)*.25+B[0]*.75;my=A[1]*.25+(B[1]-26)*.25}
+  else{const p=clip(A,B),q=clip(B,A);d=`M${p[0]} ${p[1]} L${q[0]} ${q[1]}`;mx=(p[0]+q[0])/2;my=(p[1]+q[1])/2}
+  e+=`<path d="${d}" fill="none" stroke="var(--mut)" stroke-width="2.5" marker-end="url(#ar)"/><text x="${mx}" y="${my-5}" text-anchor="middle" font-size="13" fill="var(--tx)" stroke="var(--bg1)" stroke-width="4" paint-order="stroke">${l}</text>`});
+ Object.values(G).forEach(([x,y,l,t,p])=>{const sn=t.length&&t.flatMap(ids).every(i=>seen.has(i)),doom=l==='DOOMSDAY';
+  n+=`<g opacity="${sn?.55:1}"><rect x="${x-80}" y="${y-24}" width="160" height="48" rx="14" fill="${doom?'#3fae4a':PH[p][1]}" stroke="${doom?'#ffd400':'rgba(255,255,255,.6)'}" stroke-width="${doom?4:2}"/><text class="t" x="${x}" y="${y+7}" text-anchor="middle" font-size="${doom?28:19}" fill="${p==7&&!doom?'#14151c':'#fff'}">${sn?'✓ ':''}${l}</text></g>`});
+ return `<div class="glass legend"><p>Cada flecha indica qué aporta un título al siguiente. Todo desemboca en Doomsday. Los títulos que ya viste aparecen atenuados con ✓.</p></div><div class="glass svgw"><svg viewBox="0 0 1100 560" role="img" aria-label="Mapa de conexiones entre títulos"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--mut)"/></marker></defs>${e}${n}</svg></div>`}
+function treeHTML(){
+ const B=[[50,'Tierra-616','#e62429',['MCU principal: Endgame, Thunderbolts*,','Brand New Day'],1],[150,'Tierra-828','#3fae4a',['Los 4 Fantásticos (años 60)','Reed ya viaja por el multiverso'],1],[250,'Tierra de los X-Men de Fox','#ffd400',['X-Men 2000–2014 y Deadpool & Wolverine','Vuelven Xavier, Magneto y Cyclops'],1],[350,'Tierras de Spider-Man','#2196f3',['No Way Home trajo villanos y Spiders','de otras Tierras (sin confirmar en Doomsday)'],0],[450,'Ramas infinitas','#a35be0',['What If…? y el final de Loki T2:','cada decisión crea una rama nueva'],0]];
+ let o='';
+ B.forEach(([y,t,c,l,m])=>{o+=`<path d="M136 260 C230 260 240 ${y} 330 ${y}" fill="none" stroke="#ffd400" stroke-width="3"/><path d="M650 ${y} C770 ${y} 780 260 880 260" fill="none" stroke="${m?'#ffd400':'var(--mut)'}" stroke-width="${m?4:2}" ${m?'':'stroke-dasharray="7 6"'}/><rect x="330" y="${y-38}" width="320" height="76" rx="16" fill="${c}"/><text class="t" x="346" y="${y-10}" font-size="25" fill="${c=='#ffd400'?'#14151c':'#fff'}">${t}</text><text x="346" y="${y+10}" font-size="14" fill="${c=='#ffd400'?'#14151c':'#fff'}">${l[0]}</text><text x="346" y="${y+28}" font-size="14" fill="${c=='#ffd400'?'#14151c':'#fff'}">${l[1]}</text>`});
+ o+=`<circle cx="90" cy="260" r="46" fill="#ffd400" stroke="#14151c" stroke-width="4"/><text class="t" x="90" y="258" text-anchor="middle" font-size="20" fill="#14151c">Línea</text><text class="t" x="90" y="280" text-anchor="middle" font-size="20" fill="#14151c">Sagrada</text><text x="90" y="330" text-anchor="middle" font-size="13" fill="var(--tx)">Loki T2: la línea</text><text x="90" y="347" text-anchor="middle" font-size="13" fill="var(--tx)">se ramifica</text><rect x="880" y="215" width="200" height="90" rx="18" fill="#3fae4a" stroke="#ffd400" stroke-width="4"/><text class="t" x="980" y="252" text-anchor="middle" font-size="32" fill="#fff">Doomsday</text><text x="980" y="276" text-anchor="middle" font-size="14" fill="#fff">Tres universos en colisión</text><text x="980" y="294" text-anchor="middle" font-size="14" fill="#fff">18 dic 2026</text>`;
+ return `<div class="glass legend"><p>Loki rompe la Línea Sagrada en ramas. Línea continua: universos protagonistas de Doomsday. Línea discontinua: ramas que ayudan a entender el multiverso pero no están confirmadas en la película.</p></div><div class="glass svgw"><svg viewBox="0 0 1100 520" role="img" aria-label="Árbol del multiverso">${o}</svg></div>`}
+function capSet(i){const c=$('#cap');if(!c)return;const d=D[i];c.innerHTML=`<b class="bb" style="font-size:24px;color:var(--tx)">${d.t}</b> · ${d.y} · ${TY[d.k]}${d.n?' · '+d.n:''}${seen.has(i)?' · visto':''}`}
+document.addEventListener('mouseover',e=>{const g=e.target.closest&&e.target.closest('.nd');if(g)capSet(+g.dataset.i)});
+function yggHTML(){
+ const tx=y=>500+14*Math.sin(y/140),main=D.filter(d=>colOf(d)!=='m'&&!/Doomsday|Secret Wars/.test(d.t)),pos={},ticks=[],ph={};
+ let cur=2450;COLS.forEach(c=>{const it=main.filter(d=>colOf(d)===c);if(!it.length)return;ticks.push([c,cur]);it.forEach((d,i)=>pos[d.id]=cur-16-i*17);cur-=it.length*17+28});
+ const Y=t=>pos[D.find(d=>d.t===t).id],cnt=[0,0],cy=170,cx=tx(cy);let br='',nd='',tx2='',tp='';
+ const node=(d,x,y,side,lab,anc,pre)=>{const e=d.r==2,c=PH[d.p][1],ha=x<300||side>0?'start':'end';return `<g class="nd${seen.has(d.id)?' seen':''}" data-i="${d.id}" style="--c:${c}">${pre||''}<circle cx="${x}" cy="${y}" r="15" fill="transparent"/><circle class="lf" cx="${x}" cy="${y}" r="${e?9:d.k==='S'?4:5}" fill="${c}"${e?' stroke="var(--tx)" stroke-width="2.5"':''}/>${lab?`<text class="t" x="${x+(anc==='end'?-16:16)}" y="${y+5}" text-anchor="${anc||'start'}" font-size="${e?21:17}" fill="${c=='#ffd400'?c:'var(--tx)'}">${lab}</text>`:`<text class="hv t" x="${x+(ha==='end'?-16:16)}" y="${y+6}" text-anchor="${ha}">${d.t.replace(/&/g,'&amp;')}</text>`}</g>`};
+ for(let y=2530;y>=200;y-=20)tp+=(tp?'L':'M')+tx(y).toFixed(1)+' '+y;
+ main.forEach(d=>{const y=pos[d.id],x0=tx(y),side=d.k==='S'?-1:1,k=cnt[side<0?0:1]++,off=44+(k%4)*24+(d.r==2?14:0),x=x0+side*off,c=PH[d.p][1];
+  const pd=`M${x0} ${y} Q${x0+side*off*.6} ${y-2} ${x} ${y-10}`;nd+=node(d,x,y-10,side,d.r==2?d.t:'','',`<path d="${pd}" fill="none" stroke="${c}" stroke-opacity=".55" stroke-width="1.5"/><path d="${pd}" fill="none" stroke="transparent" stroke-width="12"/>`);
+  if(!ph[d.p]){ph[d.p]=1;tx2+=`<line x1="100" x2="1100" y1="${y+8}" y2="${y+8}" stroke="${c}" stroke-opacity=".22" stroke-dasharray="3 7"/><text class="t" x="1150" y="${y+2}" text-anchor="end" font-size="25" fill="${c}">Fase ${d.p}</text>`}});
+ ticks.forEach(([c,y])=>tx2+=`<text class="t" x="40" y="${y}" font-size="22" fill="var(--mut)">${c==='pre'?'Antes de 1995':c==2019?'2019–20':c}</text><line x1="40" x2="${c==='pre'?170:96}" y1="${y+5}" y2="${y+5}" stroke="var(--mut)" stroke-opacity=".5"/>`);
+ const conv=(x,y,c)=>`<path d="M${x} ${y} C${x} ${y-260} ${cx+(x<500?-60:60)} ${cy+160} ${cx+(x<500?-34:34)} ${cy+14}" fill="none" stroke="${c}" stroke-opacity=".55" stroke-dasharray="6 6" stroke-width="2"/>`;
+ // Loki branch (left): nace en Endgame
+ const yE=Y('Vengadores: Endgame'),lx=230,L=[['Loki T1',yE-26],['What If…? T1 + Marvel Zombies',yE-52],['Loki T2',Y('Ant-Man y la Avispa: Quantumania')-22],['What If…? T2-T3',Y('Ant-Man y la Avispa: Quantumania')-50]],yLt=L[3][1]-50;
+ br+=`<path d="M${tx(yE)} ${yE} C${tx(yE)-150} ${yE} ${lx} ${yE-6} ${lx} ${yE-60} L${lx} ${yLt}" fill="none" stroke="#a35be0" stroke-width="3" stroke-opacity=".85"/>`+conv(lx,yLt,'#a35be0');
+ L.forEach(([t,y],j)=>{const d=D.find(q=>q.t===t),wi=/What If/.test(t),x=wi?lx-52:lx;if(wi)br+=`<path d="M${lx} ${y} L${x} ${y}" stroke="#a35be0" stroke-opacity=".7"/>`;nd+=node(d,x,y,-1,wi?'':t,wi?'end':'start')});
+ tx2+=`<text class="t" x="${lx+16}" y="${yE+30}" font-size="19" fill="#a35be0">Ramas de Loki</text>`;
+ // Fox branch (right): nace de Loki T2 a través del TVA y llega con Deadpool & Wolverine
+ const fx=880,yD=Y('Ant-Man y la Avispa: Quantumania')-76,xm=['X-Men (2000)','X2: X-Men United','X-Men: La decisión final','X-Men: Primera generación','X-Men: Días del futuro pasado'],fn=['X-Men','X2','La decisión final','Primera generación','Días del futuro pasado'],yFt=yD-70-4*50-30;
+ br+=`<path d="M${lx} ${L[2][1]} Q570 ${L[2][1]-190} ${fx-8} ${yD-8}" fill="none" stroke="#ffd400" stroke-opacity=".6" stroke-dasharray="5 6" stroke-width="2"/><path d="M${fx} ${yD} L${fx} ${yFt}" stroke="#ffd400" stroke-width="3" stroke-opacity=".85"/>`+conv(fx,yFt,'#ffd400');
+ nd+=node(D.find(q=>q.t==='Deadpool & Wolverine'),fx,yD,1,'',0);tx2+=`<text class="t" x="${fx-16}" y="${yD+6}" text-anchor="end" font-size="19" fill="#ffd400">Deadpool &amp; Wolverine</text><text class="t" x="${fx}" y="${yD+34}" text-anchor="middle" font-size="19" fill="#ffd400">Tierra de Fox</text><text x="${fx}" y="${yD+54}" text-anchor="middle" font-size="13" fill="var(--mut)">llega por el TVA tras Loki T2</text>`;
+ xm.forEach((t,j)=>{const d=D.find(q=>q.t===t),y=yD-70-j*50;nd+=node(d,fx,y,1,d.y+' · '+fn[j],'start')});
+ // Tierra-828: llega desde la órbita de la Tierra-616 tras Thunderbolts*
+ const yT=Y('Thunderbolts*'),f4=D.find(q=>q.t.startsWith('Los 4 F')),fy=yT-290,f4x=800;
+ br+=`<path d="M${tx(yT)} ${yT} C${tx(yT)+30} ${yT-70} ${f4x-60} ${fy+30} ${f4x} ${fy}" fill="none" stroke="#3fae4a" stroke-width="3" stroke-opacity=".85"/>`+conv(f4x,fy,'#3fae4a');
+ nd+=node(f4,f4x,fy,1,'','');tx2+=`<text class="t" x="${f4x}" y="${fy+34}" text-anchor="middle" font-size="19" fill="#3fae4a">Tierra-828 · Los 4 Fantásticos</text>`;
+ const pts=Array.from({length:20},(_,i)=>{const r=i%2?20:38,a=Math.PI*i/10;return(cx+r*Math.cos(a))+','+(cy+r*Math.sin(a))}).join(' ');
+ const crown=`<polygon points="${pts}" fill="#3fae4a" stroke="#ffd400" stroke-width="3" style="filter:drop-shadow(0 0 14px #3fae4a)"/><text class="t" x="${cx}" y="${cy-56}" text-anchor="middle" font-size="40" fill="#ffd400">Avengers: Doomsday</text><text x="${cx}" y="${cy+66}" text-anchor="middle" font-size="15" fill="var(--mut)">2028 en la cronología · estreno 18 dic 2026</text><circle cx="${cx}" cy="40" r="5" fill="none" stroke="var(--mut)" stroke-dasharray="3 3"/><text x="${cx+14}" y="45" font-size="14" fill="var(--mut)">Secret Wars</text>`;
+ const roots=[380,500,620].map(x=>`<path d="M500 2540 Q${(500+x)/2} 2565 ${x} 2590" fill="none" stroke="#ffd400" stroke-opacity=".25" stroke-width="2"/>`).join('');
+ const lg=Object.entries(PH).filter(([k])=>k<7).map(([k,v])=>`<span class="chip" style="--c:${v[1]}"><i></i>${v[0]}</span>`).join('');
+ return `<div class="glass legend">${lg}<p>La altura sigue las fechas de la cronología. El tronco es la Línea Sagrada; series a la izquierda y cine a la derecha. Las ramas salen donde ocurren: Loki nace en Endgame, Fox llega por el TVA con Deadpool & Wolverine y la Tierra-828 aparece tras Thunderbolts*. Las líneas discontinuas convergen en Doomsday. Toca una hoja para marcarla como vista.</p></div><div class="glass cap" id="cap">Pasa el cursor o toca una hoja para ver su título.</div><div class="glass ygg"><svg viewBox="0 0 1180 2610" role="img" aria-label="Yggdrasil: árbol de títulos del MCU"><defs><linearGradient id="tg" gradientUnits="userSpaceOnUse" x1="0" y1="2540" x2="0" y2="200"><stop offset="0" stop-color="#e62429"/><stop offset=".3" stop-color="#a35be0"/><stop offset=".6" stop-color="#2196f3"/><stop offset=".85" stop-color="#12b99a"/><stop offset="1" stop-color="#3fae4a"/></linearGradient></defs>${tx2}${roots}<path d="${tp}" fill="none" stroke="url(#tg)" stroke-width="16" stroke-opacity=".18" stroke-linecap="round" stroke-linejoin="round"/><path d="${tp}" fill="none" stroke="url(#tg)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>${br}${nd}${crown}</svg></div>`}
+function render(){
+ let h='';
+ if(view==='ruta'){
+  R.forEach((r,i)=>{const il=r[0].flatMap(ids),all=il.every(x=>seen.has(x));
+   if(hide&&all)return;
+   const d={...D[il[0]],t:r[1],n:''};
+   h+=`<div class="step"><div class="n">${i+1}</div>${card(d,all,`<p class="why" style="margin:4px 0 0">${r[2]}</p>`,il)}</div>`});
+  h=`<div class="route">${h}<div class="step"><div class="n">★</div><div class="glass final"><b>Avengers: Doomsday</b><span class="bb" style="font-size:26px">18 de diciembre de 2026</span></div></div></div>`;
+  h+=`<div class="glass mut"><h2 class="disp">Mutantes que vuelven</h2><ul>${[['Xavier y Magneto','X-Men (2000)'],['Cyclops y Mystique','X-Men (2000)'],['Nightcrawler','X2'],['Beast','La decisión final'],['Gambit','Deadpool & Wolverine']].map(m=>`<li><b class="bb">${m[0]}</b><span>${m[1]}</span></li>`).join('')}</ul></div>`;
+  const ex=D.filter(d=>d.r==1&&(!hide||!seen.has(d.id))).sort((a,b)=>(a.p==7?0:a.p)-(b.p==7?0:b.p));
+  if(ex.length)h+=`<div class="ph"><h2 class="disp" style="--c:#ffd400">Si hay tiempo</h2><span>Extras en orden cronológico: X-Men de Fox primero, luego el MCU</span></div><div class="grid">${ex.map(d=>card(d,seen.has(d.id),'',[d.id])).join('')}</div>`;
+ }else if(view==='map'){h=mapHTML()}else if(view==='graph'){h=graphHTML()}else if(view==='tree'){h=treeHTML()}else if(view==='ygg'){h=yggHTML()}else{
+  [1,2,3,4,5,6,7].forEach(p=>{
+   if(ph&&ph!==p)return;
+   const l=D.filter(d=>d.p===p&&d.t.toLowerCase().includes(q)&&!(hide&&seen.has(d.id)));
+   if(!l.length)return;
+   h+=`<div class="ph" style="--c:${PH[p][1]}"><h2 class="disp">${p<7?'Fase '+p+' · ':''}${PH[p][0]}</h2><span>${l.length} títulos</span></div><div class="grid">${l.map(d=>card(d,seen.has(d.id),'',[d.id])).join('')}</div>`});
+ }
+ $('#out').innerHTML=h||'<div class="glass empty">Sin resultados. Prueba otro título o quita los filtros.</div>';
+
+ $('#next').innerHTML=nextHTML();progress()}
+function chips(){
+ $('#phases').innerHTML=`<button class="chip" data-p="0" aria-pressed="${ph==0}" style="--c:#ec1d24">Todas</button>`+Object.entries(PH).map(([k,v])=>`<button class="chip" data-p="${k}" aria-pressed="${ph==k}" style="--c:${v[1]}"><i></i>${v[0]}</button>`).join('')}
+document.addEventListener('click',e=>{
+ const g=e.target.closest('.nd');if(g){const i=+g.dataset.i;seen.has(i)?seen.delete(i):seen.add(i);save();render();capSet(i);return}
+ const t=e.target.closest('button');if(!t)return;
+ if(t.dataset.v){view=t.dataset.v;document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-pressed',b===t));$('#phases').style.display=view==='tl'?'flex':'none';render()}
+ else if(t.dataset.p!==undefined){ph=+t.dataset.p;chips();render()}
+ else if(t.id==='hl'){hl=!hl;render()}
+ else if(t.id==='hide'){hide=!hide;t.setAttribute('aria-pressed',hide);render()}
+ else if(t.dataset.i){const l=t.dataset.i.split(',').map(Number),all=l.every(x=>seen.has(x));l.forEach(x=>all?seen.delete(x):seen.add(x));save();render()}});
+$('#q').addEventListener('input',e=>{q=e.target.value.toLowerCase().trim();if(q&&view!=='tl')document.querySelector('[data-v=tl]').click();else render()});
+const left=Math.max(0,Math.ceil((new Date(2026,11,18)-new Date().setHours(0,0,0,0))/864e5));
+$('#days').textContent=left;
+chips();render();
+</script></body></html>
